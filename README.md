@@ -112,3 +112,9 @@ Run both test suites with:
 ```sh
 make test
 ```
+
+Run `luacheck` with:
+
+```sh
+make lint
+```

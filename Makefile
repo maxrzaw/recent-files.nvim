@@ -2,9 +2,12 @@ DEPS_DIR := tests/.deps
 PLENARY_DIR := $(DEPS_DIR)/plenary.nvim
 TELESCOPE_DIR := $(DEPS_DIR)/telescope.nvim
 
-.PHONY: test test-deps test-unit test-integration
+.PHONY: test test-deps test-unit test-integration lint
 
 test: test-unit test-integration
+
+lint:
+	luacheck lua tests/minimal_init.lua tests/unit tests/integration
 
 test-deps:
 	@mkdir -p "$(DEPS_DIR)"
