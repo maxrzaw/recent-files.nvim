@@ -1,13 +1,12 @@
 # `recent-files.nvim`
 
-A Telescope extension that keeps a recent-files list for Neovim based on actual buffer activity.
+A Telescope extension that provides a git worktree aware recent-files picker for Neovim.
 
 It is built around a few behaviors that are useful when you work across Git repos and worktrees:
 
 - understands Git worktrees
 - can treat the same relative path in sibling worktrees as one logical entry when you are browsing from that shared Git context
 - falls back to distinct file paths when there is no matching Git context to translate through
-- uses its own tracking instead of relying on `vim.v.oldfiles`
 
 ## Requirements
 
@@ -100,4 +99,16 @@ Run the unit tests with:
 
 ```sh
 make test-unit
+```
+
+Bootstrap the test dependencies and run the Telescope integration tests with:
+
+```sh
+make test-integration
+```
+
+Run both test suites with:
+
+```sh
+make test
 ```
