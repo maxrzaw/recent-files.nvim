@@ -97,6 +97,13 @@ function M.new(deps)
         return vim.tbl_deep_extend("force", picker_config.mappings or {}, opts.mappings or {})
     end
 
+    local function configured_prompt_title()
+        local config = get_config and get_config() or {}
+        local picker_config = config.picker or {}
+
+        return picker_config.prompt_title or "Worktree Oldfiles"
+    end
+
     local function apply_mappings(map, prompt_bufnr, mappings)
         for _, mode in ipairs({ "i", "n" }) do
             for lhs, handler in pairs(mappings[mode] or {}) do
@@ -119,7 +126,7 @@ function M.new(deps)
 
         pickers
             .new(opts, {
-                prompt_title = "Worktree Oldfiles",
+                prompt_title = configured_prompt_title(),
                 finder = finders.new_table({
                     results = items,
                     entry_maker = function(item)

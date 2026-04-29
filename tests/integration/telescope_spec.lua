@@ -7,6 +7,9 @@ describe("worktree_oldfiles Telescope integration", function()
             extensions = {
                 worktree_oldfiles = {
                     ignore_patterns = { "first.lua" },
+                    picker = {
+                        prompt_title = "My Worktree Oldfiles",
+                    },
                 },
             },
         })
@@ -89,7 +92,7 @@ describe("worktree_oldfiles Telescope integration", function()
         local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
 
         assert.is_not_nil(picker)
-        assert.are.equal("Worktree Oldfiles", picker.prompt_title)
+        assert.are.equal("My Worktree Oldfiles", picker.prompt_title)
         assert.are.equal(0, #picker.finder.results)
     end)
 

@@ -68,6 +68,7 @@ require("telescope").setup({
                 gitrebase = true,
             },
             picker = {
+                prompt_title = "My Worktree Oldfiles",
                 mappings = {
                     i = {
                         ["<C-y>"] = function(prompt_bufnr)
@@ -84,6 +85,8 @@ require("telescope").setup({
 })
 ```
 
+`picker.prompt_title` overrides the Telescope picker title.
+
 `picker.mappings` follows Telescope's per-mode mapping format and is merged into the extension picker.
 
 ### Defaults
@@ -92,6 +95,7 @@ require("telescope").setup({
 - `max_entries = 1000`
 - generic ignore patterns for build output, temporary files, and OS junk
 - default skip filetypes: `alpha`, `gitcommit`, `gitrebase`, `lazy`, `mason`, `neo-tree`, `TelescopePrompt`
+- `picker.prompt_title = "Worktree Oldfiles"`
 
 ## Development
 

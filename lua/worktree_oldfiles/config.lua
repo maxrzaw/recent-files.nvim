@@ -1,6 +1,7 @@
 local M = {}
 
 ---@class WorktreeOldfilesPickerConfig
+---@field prompt_title? string Picker title shown in Telescope.
 ---@field mappings? table<string, table<string, fun(prompt_bufnr: number)>> Telescope-style per-mode mappings applied to the custom picker.
 
 ---@class WorktreeOldfilesCompiledConfig
@@ -46,6 +47,7 @@ function M.defaults()
             ["TelescopePrompt"] = true,
         },
         picker = {
+            prompt_title = "Worktree Oldfiles",
             mappings = {},
         },
     }
