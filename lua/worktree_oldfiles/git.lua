@@ -1,13 +1,13 @@
 local M = {}
 
----@class RecentFilesGitDeps
----@field state RecentFilesState
+---@class WorktreeOldfilesGitDeps
+---@field state WorktreeOldfilesState
 ---@field logic table
 ---@field normalize_path fun(path: string|nil): string|nil
 ---@field path_exists fun(path: string|nil): boolean
 ---@field mark_stale fun(file: string)
 
----@param deps RecentFilesGitDeps
+---@param deps WorktreeOldfilesGitDeps
 function M.new(deps)
     local state = deps.state
     local logic = deps.logic

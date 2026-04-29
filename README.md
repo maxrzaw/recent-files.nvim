@@ -1,6 +1,6 @@
-# `recent-files.nvim`
+# `worktree-oldfiles.nvim`
 
-A Telescope extension that provides a git worktree aware recent-files picker for Neovim.
+A Telescope extension that provides a git worktree aware oldfiles picker for Neovim.
 
 It is built around a few behaviors that are useful when you work across Git repos and worktrees:
 
@@ -23,11 +23,11 @@ It is built around a few behaviors that are useful when you work across Git repo
     "nvim-telescope/telescope.nvim",
     dependencies = {
         "nvim-lua/plenary.nvim",
-        "maxrzaw/recent-files.nvim",
+        "maxrzaw/worktree-oldfiles.nvim",
     },
     opts = {
         extensions = {
-            recent_files = {
+            worktree_oldfiles = {
                 default_branch = "main",
             },
         },
@@ -35,24 +35,24 @@ It is built around a few behaviors that are useful when you work across Git repo
     config = function(_, opts)
         local telescope = require("telescope")
         telescope.setup(opts)
-        telescope.load_extension("recent_files")
+        telescope.load_extension("worktree_oldfiles")
     end,
 }
 ```
 
 ## Usage
 
-- Lua: `require("telescope").extensions.recent_files.recent_files()`
-- Command: `:Telescope recent_files`
+- Lua: `require("telescope").extensions.worktree_oldfiles.worktree_oldfiles()`
+- Command: `:Telescope worktree_oldfiles`
 
 ## Configuration
 
-Pass a partial config through `telescope.setup({ extensions = { recent_files = { ... } } })`.
+Pass a partial config through `telescope.setup({ extensions = { worktree_oldfiles = { ... } } })`.
 
 ```lua
 require("telescope").setup({
     extensions = {
-        recent_files = {
+        worktree_oldfiles = {
             default_branch = "main",
             repo_overrides = {
                 ["/path/to/repo/.git"] = "trunk",

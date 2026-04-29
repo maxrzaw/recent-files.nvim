@@ -1,16 +1,16 @@
 local M = {}
 
----@class RecentFilesPickerDeps
+---@class WorktreeOldfilesPickerDeps
 ---@field logic table
 ---@field load_records fun()
----@field sorted_records fun(): RecentFileRecord[]
----@field current_context fun(): RecentFilesContext|nil
----@field resolve_record_target fun(record: RecentFileRecord, context: RecentFilesContext|nil): string|nil
----@field should_ignore_record fun(file: string, record?: RecentFileRecord): boolean
+---@field sorted_records fun(): WorktreeOldfilesRecord[]
+---@field current_context fun(): WorktreeOldfilesContext|nil
+---@field resolve_record_target fun(record: WorktreeOldfilesRecord, context: WorktreeOldfilesContext|nil): string|nil
+---@field should_ignore_record fun(file: string, record?: WorktreeOldfilesRecord): boolean
 ---@field normalize_path fun(path: string|nil): string|nil
----@field get_config fun(): RecentFilesConfig
+---@field get_config fun(): WorktreeOldfilesConfig
 
----@param deps RecentFilesPickerDeps
+---@param deps WorktreeOldfilesPickerDeps
 function M.new(deps)
     local logic = deps.logic
     local load_records = deps.load_records
@@ -119,7 +119,7 @@ function M.new(deps)
 
         pickers
             .new(opts, {
-                prompt_title = "Recent Files",
+                prompt_title = "Worktree Oldfiles",
                 finder = finders.new_table({
                     results = items,
                     entry_maker = function(item)

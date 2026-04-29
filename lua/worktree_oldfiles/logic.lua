@@ -1,22 +1,22 @@
 local M = {}
 
----@class RecentFileRecord
+---@class WorktreeOldfilesRecord
 ---@field file string
 ---@field git_root? string
 ---@field git_common_dir? string
 ---@field relative_path? string
 ---@field last_accessed? integer
 
----@class RecentFilesContext
+---@class WorktreeOldfilesContext
 ---@field git_root string
 ---@field git_common_dir string
 
----@class RecentFilesWorktree
+---@class WorktreeOldfilesWorktree
 ---@field path string
 ---@field branch? string
 ---@field git_common_dir? string
 
----@class RecentFilesIgnorePattern
+---@class WorktreeOldfilesIgnorePattern
 ---@field negated boolean
 ---@field basename_only boolean
 ---@field regex string

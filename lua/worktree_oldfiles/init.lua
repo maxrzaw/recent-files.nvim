@@ -1,30 +1,30 @@
----@class RecentFilesPickerOpts
+---@class WorktreeOldfilesPickerOpts
 ---@field mappings? table<string, table<string, fun(prompt_bufnr: number)>> Telescope-style per-mode mapping overrides for a single picker invocation.
 
----@class RecentFilesState
+---@class WorktreeOldfilesState
 ---@field loaded boolean
 ---@field setup_done boolean
----@field records table<string, RecentFileRecord>
+---@field records table<string, WorktreeOldfilesRecord>
 ---@field stale table<string, integer>
----@field config RecentFilesConfig
----@field compiled RecentFilesCompiledConfig
+---@field config WorktreeOldfilesConfig
+---@field compiled WorktreeOldfilesCompiledConfig
 
----@class RecentFilesModule
----@field open_picker fun(opts?: RecentFilesPickerOpts)
----@field setup fun(opts?: RecentFilesConfig)
+---@class WorktreeOldfilesModule
+---@field open_picker fun(opts?: WorktreeOldfilesPickerOpts)
+---@field setup fun(opts?: WorktreeOldfilesConfig)
 
----@type RecentFilesModule
+---@type WorktreeOldfilesModule
 local M = {}
 
-local config_mod = require("recent_files.config")
-local logic = require("recent_files.logic")
-local path = require("recent_files.path")
-local git_mod = require("recent_files.git")
-local store_mod = require("recent_files.store")
-local tracker_mod = require("recent_files.tracker")
-local picker_mod = require("recent_files.picker")
+local config_mod = require("worktree_oldfiles.config")
+local logic = require("worktree_oldfiles.logic")
+local path = require("worktree_oldfiles.path")
+local git_mod = require("worktree_oldfiles.git")
+local store_mod = require("worktree_oldfiles.store")
+local tracker_mod = require("worktree_oldfiles.tracker")
+local picker_mod = require("worktree_oldfiles.picker")
 
----@type RecentFilesState
+---@type WorktreeOldfilesState
 local state = {
     loaded = false,
     setup_done = false,
@@ -34,8 +34,9 @@ local state = {
     compiled = config_mod.compile(config_mod.defaults(), logic),
 }
 
-local store_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "recent-files.nvim")
-local store_path = vim.fs.joinpath(store_dir, "recent_files.json")
+local store_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "worktree-oldfiles.nvim")
+local store_path = vim.fs.joinpath(store_dir, "worktree_oldfiles.json")
+local legacy_store_path = vim.fs.joinpath(vim.fn.stdpath("data"), "recent-files.nvim", "recent_files.json")
 
 local store = store_mod.new({
     state = state,
@@ -44,6 +45,7 @@ local store = store_mod.new({
     path_exists = path.exists,
     store_dir = store_dir,
     store_path = store_path,
+    legacy_store_path = legacy_store_path,
 })
 
 local git = git_mod.new({
@@ -76,12 +78,12 @@ local picker = picker_mod.new({
     end,
 })
 
----@param opts? RecentFilesPickerOpts
+---@param opts? WorktreeOldfilesPickerOpts
 function M.open_picker(opts)
     return picker.open_picker(opts)
 end
 
----@param opts? RecentFilesConfig
+---@param opts? WorktreeOldfilesConfig
 function M.setup(opts)
     state.config = config_mod.merge(state.config, opts)
     state.compiled = config_mod.compile(state.config, logic)
@@ -92,7 +94,7 @@ function M.setup(opts)
 
     store.load_records()
 
-    local group = vim.api.nvim_create_augroup("recent_files_nvim", { clear = true })
+    local group = vim.api.nvim_create_augroup("worktree_oldfiles_nvim", { clear = true })
     vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost" }, {
         group = group,
         callback = tracker.record_current_buffer,

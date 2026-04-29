@@ -1,7 +1,7 @@
 local assert = require("luassert")
-local logic = require("recent_files.logic")
+local logic = require("worktree_oldfiles.logic")
 
-describe("recent_files.logic", function()
+describe("worktree_oldfiles.logic", function()
     describe("relative_to_root", function()
         it("returns a relative path inside the root", function()
             local relative = logic.relative_to_root("/tmp/project/lua/file.lua", "/tmp/project", function(path)

@@ -1,18 +1,18 @@
 local M = {}
 
----@class RecentFilesPickerConfig
+---@class WorktreeOldfilesPickerConfig
 ---@field mappings? table<string, table<string, fun(prompt_bufnr: number)>> Telescope-style per-mode mappings applied to the custom picker.
 
----@class RecentFilesCompiledConfig
+---@class WorktreeOldfilesCompiledConfig
 ---@field ignore_patterns table[]
 
----@class RecentFilesConfig
+---@class WorktreeOldfilesConfig
 ---@field default_branch? string Preferred branch when resolving canonical worktree paths.
 ---@field repo_overrides? table<string, string> Override canonical branch by git common dir.
 ---@field max_entries? integer Maximum number of records persisted to disk.
 ---@field ignore_patterns? string[] Gitignore-style patterns excluded from tracking and display.
 ---@field skip_filetypes? table<string, boolean> Filetypes ignored by buffer tracking.
----@field picker? RecentFilesPickerConfig Telescope-facing picker options.
+---@field picker? WorktreeOldfilesPickerConfig Telescope-facing picker options.
 
 function M.defaults()
     return {
@@ -51,16 +51,16 @@ function M.defaults()
     }
 end
 
----@param current RecentFilesConfig|nil
----@param opts RecentFilesConfig|nil
----@return RecentFilesConfig
+---@param current WorktreeOldfilesConfig|nil
+---@param opts WorktreeOldfilesConfig|nil
+---@return WorktreeOldfilesConfig
 function M.merge(current, opts)
     return vim.tbl_deep_extend("force", current or M.defaults(), opts or {})
 end
 
----@param config RecentFilesConfig
+---@param config WorktreeOldfilesConfig
 ---@param logic table
----@return RecentFilesCompiledConfig
+---@return WorktreeOldfilesCompiledConfig
 function M.compile(config, logic)
     return {
         ignore_patterns = logic.compile_ignore_patterns(config.ignore_patterns),

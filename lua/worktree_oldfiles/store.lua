@@ -1,14 +1,15 @@
 local M = {}
 
----@class RecentFilesStoreDeps
----@field state RecentFilesState
+---@class WorktreeOldfilesStoreDeps
+---@field state WorktreeOldfilesState
 ---@field logic table
 ---@field normalize_path fun(path: string|nil): string|nil
 ---@field path_exists fun(path: string|nil): boolean
 ---@field store_dir string
 ---@field store_path string
+---@field legacy_store_path? string
 
----@param deps RecentFilesStoreDeps
+---@param deps WorktreeOldfilesStoreDeps
 function M.new(deps)
     local state = deps.state
     local logic = deps.logic
@@ -16,6 +17,7 @@ function M.new(deps)
     local path_exists = deps.path_exists
     local store_dir = deps.store_dir
     local store_path = deps.store_path
+    local legacy_store_path = deps.legacy_store_path
 
     local function ensure_store_dir()
         vim.fn.mkdir(store_dir, "p")
@@ -38,7 +40,8 @@ function M.new(deps)
         ensure_store_dir()
 
         if not path_exists(store_path) then
-            write_file(store_path, "[]")
+            local legacy = legacy_store_path and read_file(legacy_store_path) or nil
+            write_file(store_path, legacy or "[]")
         end
 
         return read_file(store_path)

@@ -1,14 +1,26 @@
 local assert = require("luassert")
 
-describe("recent_files Telescope integration", function()
-    local function reset_recent_files_modules()
+describe("worktree_oldfiles Telescope integration", function()
+    local function configure_telescope()
+        local telescope = require("telescope")
+        telescope.setup({
+            extensions = {
+                worktree_oldfiles = {
+                    ignore_patterns = { "first.lua" },
+                },
+            },
+        })
+        telescope.load_extension("worktree_oldfiles")
+    end
+
+    local function reset_worktree_oldfiles_modules()
         for name, _ in pairs(package.loaded) do
-            if name == "recent_files" or name:match("^recent_files%.") or name == "telescope._extensions.recent_files" then
+            if name == "worktree_oldfiles" or name:match("^worktree_oldfiles%.") or name == "telescope._extensions.worktree_oldfiles" then
                 package.loaded[name] = nil
             end
         end
 
-        require("telescope").extensions.recent_files = nil
+        require("telescope").extensions.worktree_oldfiles = nil
     end
 
     local function cleanup_windows()
@@ -24,6 +36,7 @@ describe("recent_files Telescope integration", function()
     end
 
     local function clear_store()
+        vim.fn.delete(vim.fs.joinpath(vim.fn.stdpath("data"), "worktree-oldfiles.nvim"), "rf")
         vim.fn.delete(vim.fs.joinpath(vim.fn.stdpath("data"), "recent-files.nvim"), "rf")
     end
 
@@ -36,17 +49,8 @@ describe("recent_files Telescope integration", function()
         cleanup_windows()
         vim.cmd("silent! %bwipeout!")
         clear_store()
-        reset_recent_files_modules()
-
-        local telescope = require("telescope")
-        telescope.setup({
-            extensions = {
-                recent_files = {
-                    ignore_patterns = { "first.lua" },
-                },
-            },
-        })
-        telescope.load_extension("recent_files")
+        reset_worktree_oldfiles_modules()
+        configure_telescope()
     end)
 
     after_each(function()
@@ -58,8 +62,8 @@ describe("recent_files Telescope integration", function()
     it("loads the extension export", function()
         local telescope = require("telescope")
 
-        assert.is_table(telescope.extensions.recent_files)
-        assert.is_function(telescope.extensions.recent_files.recent_files)
+        assert.is_table(telescope.extensions.worktree_oldfiles)
+        assert.is_function(telescope.extensions.worktree_oldfiles.worktree_oldfiles)
     end)
 
     it("opens through Telescope and applies configured picker filtering", function()
@@ -73,7 +77,7 @@ describe("recent_files Telescope integration", function()
         vim.cmd.edit(vim.fn.fnameescape(first))
         vim.cmd.edit(vim.fn.fnameescape(second))
 
-        vim.cmd("Telescope recent_files")
+        vim.cmd("Telescope worktree_oldfiles")
 
         local opened = vim.wait(1000, function()
             return vim.bo[vim.api.nvim_get_current_buf()].filetype == "TelescopePrompt"
@@ -85,7 +89,37 @@ describe("recent_files Telescope integration", function()
         local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
 
         assert.is_not_nil(picker)
-        assert.are.equal("Recent Files", picker.prompt_title)
+        assert.are.equal("Worktree Oldfiles", picker.prompt_title)
         assert.are.equal(0, #picker.finder.results)
+    end)
+
+    it("migrates records from the legacy recent-files store", function()
+        local temp_dir = vim.fn.tempname()
+        local legacy_file = vim.fs.joinpath(temp_dir, "legacy.lua")
+        local legacy_store = vim.fs.joinpath(vim.fn.stdpath("data"), "recent-files.nvim", "recent_files.json")
+        local new_store = vim.fs.joinpath(vim.fn.stdpath("data"), "worktree-oldfiles.nvim", "worktree_oldfiles.json")
+
+        clear_store()
+        reset_worktree_oldfiles_modules()
+
+        write_file(legacy_file, { "return 1" })
+        write_file(legacy_store, { vim.json.encode({ { file = legacy_file, last_accessed = 1 } }) })
+
+        configure_telescope()
+        vim.cmd("Telescope worktree_oldfiles")
+
+        local opened = vim.wait(1000, function()
+            return vim.bo[vim.api.nvim_get_current_buf()].filetype == "TelescopePrompt"
+        end)
+
+        assert.is_true(opened)
+
+        local prompt_bufnr = vim.api.nvim_get_current_buf()
+        local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+
+        assert.is_not_nil(picker)
+        assert.are.equal(1, #picker.finder.results)
+        assert.are.equal(legacy_file, picker.finder.results[1].filename)
+        assert.is_true(vim.uv.fs_stat(new_store) ~= nil)
     end)
 end)
