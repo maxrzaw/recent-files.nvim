@@ -36,6 +36,7 @@ local state = {
 
 local store_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "worktree-oldfiles.nvim")
 local store_path = vim.fs.joinpath(store_dir, "worktree_oldfiles.json")
+-- TODO: Remove this legacy migration path after users have had time to move off recent-files.nvim.
 local legacy_store_path = vim.fs.joinpath(vim.fn.stdpath("data"), "recent-files.nvim", "recent_files.json")
 
 local store = store_mod.new({
